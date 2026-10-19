@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 @theme {
   --color-primary: #FF7A00;
@@ -11,16 +9,6 @@
 
   --font-display: 'Inter', ui-sans-serif, system-ui, sans-serif;
   --font-twi: 'Inter', sans-serif;
-  
+
   --radius: 12px;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  font-family: var(--font-display);
-  background: var(--color-white);
-  color: var(--color-black);
 }
