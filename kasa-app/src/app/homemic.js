@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRouter } from 'expo-router';
 import { extractSale } from '../data/ghanaProducts';
 
 export default function HomeMic() {
   const [user, setUser] = useState({ name:'Trader' });
   const [lastSale, setLastSale] = useState(null);
+  const router = useRouter();
 
   useEffect(() => {
     AsyncStorage.getItem('kasaUser').then(u => { if(u) setUser(JSON.parse(u)); });
@@ -38,6 +40,14 @@ export default function HomeMic() {
           <Text className="text-xs text-gray-600">Raw: {lastSale.rawText} — Works for kobi, momoni, tomato, shoes</Text>
         </View>
       )}
+
+      <TouchableOpacity onPress={() => router.push('/ledger')} className="mt-6">
+        <Text className="text-center font-bold" style={{color:'#0f4c5c'}}>View My Ledger →</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={() => router.push('/score')} className="mt-2">
+        <Text className="text-center text-gray-500">Check Kasa Score →</Text>
+      </TouchableOpacity>
     </View>
   );
 }
