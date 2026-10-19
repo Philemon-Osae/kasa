@@ -32,29 +32,39 @@ export const GHANA_PRODUCTS = [
 export function extractSale(text) {
   const lower = text.toLowerCase();
   
-  // Find item - check longest first so "smoked fish" before "fish"
+  // Find item - longest first so "smoked fish" before "fish"
   const sorted = [...GHANA_PRODUCTS].sort((a,b) => b.length - a.length);
   let item = sorted.find(p => lower.includes(p)) || "product";
   
-  // If not in list, try to get word before GH
+  // Fallback: word before GH
   if (item === "product") {
     const rawMatch = lower.match(/(\w+)\s+(?:for\s+)?gh/i);
     if (rawMatch) item = rawMatch[1];
   }
 
-  // Amount - GH150, 150, one fifty
+  // Amount - GH150, GHS 200, 150, "one fifty"
   let amount = 100;
   const m = lower.match(/(?:gh|ghs|cedis)?\s*(\d{2,4})/);
   if (m) amount = parseInt(m[1]);
   if (lower.includes("one fifty") || lower.includes("150")) amount = 150;
   if (lower.includes("two hundred") || lower.includes("200")) amount = 200;
   if (lower.includes("fifty")) amount = 50;
-  if (lower.includes("hundred")) amount = 100;
 
   // Customer - ama Ama, ma Ama, to Ama
   let customer = "Customer";
   const cm = text.match(/(?:ama|ma|to|for)\s+([A-Z]\w+)/i);
   if (cm) customer = cm[1];
+  customer = customer.charAt(0).toUpperCase() + customer.slice(1);
 
-  return { item, amount, customer, rawText: text };
+  // Return shape that homemic.js + ledger.js expect
+  return { 
+    item, 
+    amount, 
+    customer, 
+    raw: text,        // <-- ledger uses item.raw
+    rawText: text,    // <-- keep both for safety
+    qty: lower.includes('three') ? 3 : lower.includes('two') ? 2 : 1
+  };
 }
+
+export default GHANA_PRODUCTS;
